@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HELP_Desk.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +29,23 @@ namespace HELP_Desk
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddMvc();
+            services.AddCors();
+            services.AddDbContext<AuthenticationContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("identity_Conn")));
+            // services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<AuthenticationContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+           .AddEntityFrameworkStores<AuthenticationContext>();
+          
+            services.Configure<IdentityOptions>(options =>
+           {
+               options.Password.RequireNonAlphanumeric = false;
+               options.Password.RequireUppercase = false;
+               options.Password.RequireLowercase = false;
+               options.Password.RequiredLength = 4;
+
+           }
+           );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +55,16 @@ namespace HELP_Desk
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
+            app.UseAuthentication();
+
+            app.UseCors((builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
             app.UseHttpsRedirection();
 
