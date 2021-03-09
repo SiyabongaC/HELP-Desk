@@ -14,14 +14,14 @@ namespace HELP_Desk.Controllers
     public class ApplicationUserController : ControllerBase
     {
         private UserManager<ApplicationUser> _usermanager;
-        private SignInManager<ApplicationUser> _signmanager;
+        private SignInManager<ApplicationUser> _signinmanager;
 
 
-        //will be injected automatically on that startup class *AddIdentityCore*
-        public ApplicationUserController(UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signmanager)
+        //will be injected automatically on that startup class *services.AddIdentityCore*
+        public ApplicationUserController(UserManager<ApplicationUser> usermanager, SignInManager<ApplicationUser> signinmanager)
         {
             _usermanager = usermanager;
-            _signmanager = signmanager;
+            _signinmanager = signinmanager;
         }
         [HttpPost]
         [Route("Register")]
@@ -33,9 +33,8 @@ namespace HELP_Desk.Controllers
             {
                 name = model.Name,
                 surname = model.Surname,
-                UserName = model.UserName,
-                Email = model.Email
-                
+                Email = model.Email,
+                UserName = model.Email
             };
 
             try

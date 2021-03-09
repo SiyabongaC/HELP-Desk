@@ -33,17 +33,19 @@ namespace HELP_Desk
             services.AddCors();
             services.AddDbContext<AuthenticationContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("identity_Conn")));
-            // services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<AuthenticationContext>();
-            services.AddIdentity<IdentityUser, IdentityRole>()
-           .AddEntityFrameworkStores<AuthenticationContext>();
+            // services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<AuthenticationContext>(); for core 2.1
+            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthenticationContext>();
           
+            //Validations
             services.Configure<IdentityOptions>(options =>
            {
+              
                options.Password.RequireNonAlphanumeric = false;
                options.Password.RequireUppercase = false;
                options.Password.RequireLowercase = false;
                options.Password.RequiredLength = 4;
-
+               options.User.RequireUniqueEmail = true;
+              
            }
            );
         }
